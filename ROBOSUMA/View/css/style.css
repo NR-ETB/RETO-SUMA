@@ -1,0 +1,90 @@
+/* Importar fuente*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+/* Importar fuente*/
+
+/* Variables de Colores */
+:root{
+    --orange-etb: #FF6523;
+    --bgray-etb: #d8dde6;
+    --b3gray-etb: #E4E8F0;
+    --gray-etb: #f4f6f9;
+    --withe-etb: #fff;
+    --bblue-etb: #214780;
+    --fblue-etb: #14C1EA;
+    --pblue-etb: #54698d;
+    --black-etb: #333333;
+    --b2gray-etb: #969492;
+}
+/* Variables de Colores */
+
+/* Reiniciar el CSS */
+*{ 
+ 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+ 
+}
+/* Reiniciar el CSS */
+
+/* Generalidades del Cuerpo */
+body{
+ 
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+ 
+}
+/* Generalidades del Cuerpo */
+
+/* CSS del Inicio */
+.container{
+    background-image: url('../images/background/figures.jpg');
+    background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    height: 959px;
+}
+
+.inic{
+    background-color: var(--withe-etb);
+    height: 756px;
+    width: 1536px;
+    border-radius: 15px;
+    position: relative;
+    left: 190px;
+    top: 90px;
+    z-index: 1;
+}
+
+.tittle{
+    display: flex;
+    color: var(--orange-etb);
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    position: relative;
+    left: 570px;
+    top: 15px;
+}
+
+.tittle img{
+    height: 100px;
+    width: 100px;
+}
+
+.tittle h1{
+    margin-top: 30px;
+}
+
+.backdrop {
+    position: fixed; /* Se mantiene fijo en pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Oscurecimiento con transparencia */
+    z-index: 0; /* Se coloca detrás del modal */
+}
+/* CSS del Inicio */
