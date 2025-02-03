@@ -1,87 +1,135 @@
 <?php
 
-// La URL del formulario de inicio de sesión donde se obtiene el token CSRF
-$login_url = 'https://suma.etb.co:6443/';
+class SUMALogin {
+    private $baseUrl;
+    private $logPath;
 
-// Paso 1: Obtener el formulario de inicio de sesión y extraer el token CSRF
-
-// Iniciar una sesión cURL para obtener el formulario
-$ch = curl_init();
-
-// Configurar cURL
-curl_setopt($ch, CURLOPT_URL, $login_url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-// Ejecutar cURL para obtener la página de inicio de sesión
-$response = curl_exec($ch);
-
-// Verificar si hubo un error en la solicitud
-if ($response === false) {
-    die('Error al obtener el formulario de inicio de sesión: ' . curl_error($ch));
-}
-
-// Cerrar la sesión de cURL
-curl_close($ch);
-
-// Usar una librería de manejo de HTML como DOMDocument para analizar la respuesta
-libxml_use_internal_errors(true);
-$dom = new DOMDocument();
-$dom->loadHTML($response);
-$xpath = new DOMXPath($dom);
-
-// Buscar el valor del token CSRF en la página (normalmente está en un campo oculto)
-$csrf_token = '';
-$csrf_elements = $xpath->query('//input[@name="__RequestVerificationToken"]');
-
-if ($csrf_elements->length > 0) {
-    $csrf_token = $csrf_elements->item(0)->getAttribute('value');
-} else {
-    die('No se encontró el token CSRF en el formulario.');
-}
-
-// Paso 2: Enviar las credenciales y el token CSRF al servidor
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Recibe el nombre de usuario y la contraseña del formulario
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-
-    // Los datos para la solicitud POST incluyen el nombre de usuario, la contraseña y el token CSRF
-    $data = [
-        'username' => $username,
-        'password' => $password,
-        '__RequestVerificationToken' => $csrf_token
-    ];
-
-    // Paso 3: Realizar el inicio de sesión enviando los datos al servidor
-
-    // Iniciar cURL para enviar los datos del formulario
-    $ch = curl_init();
-
-    // Configurar cURL para la solicitud POST
-    curl_setopt($ch, CURLOPT_URL, $login_url); // La URL para la solicitud POST
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-    // Ejecutar la solicitud POST
-    $response = curl_exec($ch);
-
-    // Verificar si hubo un error en la solicitud
-    if ($response === false) {
-        die('Error al enviar los datos de inicio de sesión: ' . curl_error($ch));
+    public function __construct($baseUrl, $logPath) {
+        $this->baseUrl = $baseUrl;
+        $this->logPath = $logPath;
     }
 
-    // Cerrar la sesión de cURL
-    curl_close($ch);
+    public function login($username, $password) {
+        // Archivo para almacenar cookies
+        $cookieFile = 'suma_cookies.txt';
 
-    // Procesar la respuesta del servidor
-    echo 'Respuesta del servidor: ' . $response;
-} else {
-    // Si el formulario no ha sido enviado aún, muestra el formulario de inicio de sesión
-    echo 'Formulario no enviado aún.';
+        // Paso 1: Obtener la página de login para extraer el token de verificación
+        $ch = curl_init($this->baseUrl);  // URL base para el formulario de login
+
+        // Configuración de cURL para obtener la página de login
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Seguir redirecciones
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);  // Guardar cookies
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);  // Usar cookies guardadas
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  // Desactivar verificación SSL (solo para pruebas)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');  // Agregar agente de usuario
+
+        // Obtener el HTML de la página de login
+        $response = curl_exec($ch);
+
+        // Obtener el código HTTP
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+        // Verificar si hubo algún error en la solicitud
+        $errorInfo = curl_error($ch);
+
+        // Log detallado
+        file_put_contents($this->logPath,
+            "Intento de Login: " . date('Y-m-d H:i:s') . "\n" . 
+            "URL: " . $this->baseUrl . "\n" . 
+            "HTTP Code: $httpCode\n" . 
+            "Error: $errorInfo\n" . 
+            "Response Length: " . strlen($response) . "\n" . 
+            "Response Preview: " . substr($response, 0, 500) . "\n\n", 
+            FILE_APPEND
+        );
+
+        curl_close($ch);
+
+        // Paso 2: Extraer el token de verificación del HTML de la página de login
+        preg_match('/name="__RequestVerificationToken" type="hidden" value="(.*?)"/', $response, $matches);
+        if (!isset($matches[1])) {
+            return false; // Token de verificación no encontrado
+        }
+        $csrfToken = $matches[1];
+
+        // Paso 3: Enviar las credenciales con el token de verificación
+        $ch = curl_init($this->baseUrl);  // URL base del formulario de login
+
+        $postData = [
+            'username' => $username,  // El campo "name" del input
+            'password' => $password,  // El campo "name" del input
+            '__RequestVerificationToken' => $csrfToken,  // El token de verificación obtenido
+        ];
+
+        // Configuración de cURL para hacer un POST con los datos del formulario
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);  // Seguir redirecciones
+        curl_setopt($ch, CURLOPT_COOKIEJAR, $cookieFile);  // Guardar cookies
+        curl_setopt($ch, CURLOPT_COOKIEFILE, $cookieFile);  // Usar cookies guardadas
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postData);  // Datos a enviar en el POST
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);  // Desactivar verificación SSL (solo para pruebas)
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_USERAGENT, 'Mozilla/5.0');  // Agregar agente de usuario
+
+        // Realizar la solicitud y obtener la respuesta
+        $response = curl_exec($ch);
+
+        // Obtener código HTTP
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $errorInfo = curl_error($ch);
+
+        // Log detallado
+        file_put_contents($this->logPath,
+            "Intento de Login POST: " . date('Y-m-d H:i:s') . "\n" . 
+            "URL: " . $this->baseUrl . "\n" . 
+            "HTTP Code: $httpCode\n" . 
+            "Error: $errorInfo\n" . 
+            "Response Length: " . strlen($response) . "\n" . 
+            "Response Preview: " . substr($response, 0, 500) . "\n\n", 
+            FILE_APPEND
+        );
+
+        curl_close($ch);
+
+        return $this->validateLogin($response, $httpCode);
+    }
+
+    private function validateLogin($response, $httpCode) {
+        // Validación para determinar si el login fue exitoso
+        if ($httpCode == 200 || $httpCode == 302) {
+            // Verificar contenido de la respuesta para determinar login exitoso
+            if (strpos($response, 'Bienvenido') !== false) return true; // Cambiar la lógica según lo que devuelva la plataforma
+        }
+        return false;
+    }
+}
+
+// Verificar si el formulario fue enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Asegúrate de que las variables no estén vacías
+    if (!empty($_POST['username']) && !empty($_POST['password'])) {
+        $username = $_POST['username'];  // Usuario ingresado por el usuario
+        $password = $_POST['password'];  // Contraseña ingresada por el usuario
+
+        // Configuración
+        $logPath = 'C:/xampp/htdocs/login_debug.txt';  // Ruta de log
+        $suma = new SUMALogin('https://suma.etb.co:6443/', $logPath);  // URL base para login
+
+        // Intentar hacer login
+        $loginResult = $suma->login($username, $password);
+
+        if ($loginResult) {
+            echo "Login exitoso";
+            header("Location: View/mid.php");
+        } else {
+            echo "Login fallido o Credenciales Incorrectas. Revisa el log en " . $logPath;
+        }
+    } else {
+        echo "Por favor, ingresa usuario y contraseña.";
+    }
 }
 ?>
 
@@ -146,23 +194,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h1>ROBOSUMA</h1>
             </div>
 
-            <form action="" method="post">
+            <?php
+                // Iniciar la sesión
+                session_start();
+
+                // Generar un token CSRF si no existe
+                if (empty($_SESSION['csrf_token'])) {
+                    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+                }
+
+                // Obtener el token para usar en el formulario
+                $csrfToken = $_SESSION['csrf_token'];
+            ?>
+
+            <form action="" method="POST">
                 <div class="data">
+                    <!-- Campo oculto para el token CSRF -->
+                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+
                     <div>
-                        <img src="View/images/icons/email.png" alt="">
-                        <input type="text" name="username" id="username" placeholder="Usuario_Suma" required>
+                        <img src="View/images/icons/email.png" alt="Icono de correo electrónico">
+                        <input type="text" name="username" placeholder="Usuario_Suma" required>
                     </div>
 
                     <div>
-                        <img src="View/images/icons/pass.png" alt="">
-                        <input type="password" name="password" id="password" placeholder="Contraseña_Suma" required>
+                        <img src="View/images/icons/pass.png" alt="Icono de contraseña">
+                        <input type="password" name="password" placeholder="Contraseña_Suma" required>
                     </div>
-
-                    <!-- Token CSRF -->
-                    <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
 
                     <div class="buttons-act">
-                        <button class="act" type="submit" onclick="start();">Iniciar</button>
+                        <button class="act" type="submit">Iniciar</button>
                     </div>
                 </div>
             </form>
