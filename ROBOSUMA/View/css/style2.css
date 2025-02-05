@@ -58,6 +58,16 @@ body{
     z-index: 1;
 }
 
+.help{
+    color: var(--orange-etb);
+    font-size: 30px;
+    font-weight: 900;
+    position: absolute;
+    right: 0;
+    margin: 5px 15px 0 0;
+    cursor: pointer;
+}
+
 .tittle{
     display: flex;
     color: var(--orange-etb);
@@ -135,28 +145,28 @@ body{
 }
 
 .buttons-act{
-    position: relative;
-    left: 650px;
-    top: 240px;
+  position: relative;
+  left: 150px;
+  top: 80px;
 }
 
 .act{
-    border: 3px solid var(--bblue-etb);
-    border-radius: 45px;
-    background-color: var(--withe-etb);
-    color: var(--bblue-etb);
-    font-size: 32px;
-    font-weight: 900;
-    width: 300px;
-    height: 90px;
-    cursor: pointer;
-}
+  border: 3px solid var(--bblue-etb);
+  border-radius: 45px;
+  background-color: var(--withe-etb);
+  color: var(--bblue-etb);
+  font-size: 24px;
+  font-weight: 900;
+  width: 200px;
+  height: 80px;
+  cursor: pointer;
+} 
 
 .buttons-act-2{
     position: relative;
-    left: 650px;
-    top: 210px;
-    display: grid;
+    left: 550px;
+    top: 230px;
+    display: flex;
 }
 
 .band-2 img{
@@ -178,16 +188,9 @@ body{
 }
 
 .act2{
-    border: 3px solid var(--bblue-etb);
-    border-radius: 45px;
-    background-color: var(--withe-etb);
-    color: var(--bblue-etb);
-    font-size: 32px;
-    font-weight: 900;
-    width: 300px;
-    height: 90px;
+    width: 130px;
     cursor: pointer;
-    margin-bottom: 20px;
+    margin-left: 80px;
 }
 
 .backdrop {

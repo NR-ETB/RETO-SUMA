@@ -28,8 +28,7 @@ function mid_Again() {
     $('#modal-loading').modal('toggle');
     setTimeout(() => {
         $('#modal-loading').modal('hide');
-        $('#star2').css('display','block');
-        $('#star3').css('display','none');
+        location.href='./mid.php';
   }, 4000);
 }
 
@@ -37,8 +36,7 @@ function end() {
     $('#modal-loading').modal('toggle');
     setTimeout(() => {
         $('#modal-loading').modal('hide');
-        $('#star1').css('display','block');
-        $('#star3').css('display','none');
+        location.href='../index.php';
   }, 4000);
 }
 

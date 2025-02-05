@@ -189,6 +189,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         <div class="inic" id="star3">
 
+            <div class="help">
+                <span>?</span>
+            </div>
+
             <div class="tittle">
                 <img src="View/images/icons/robot.png" alt="">
                 <h1>ROBOSUMA</h1>

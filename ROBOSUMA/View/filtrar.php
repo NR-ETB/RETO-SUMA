@@ -6,7 +6,7 @@ if (isset($_SESSION['numOrdenes']) && !empty($_SESSION['numOrdenes'])) {
     $existen = [];
 
     // Leer el archivo de registros procesados
-    $archivoProcesados = 'procesados.txt';
+    $archivoProcesados = 'process.txt';
     
     // Verificar si el archivo procesados.txt existe, si no, crear uno vacío
     if (!file_exists($archivoProcesados)) {

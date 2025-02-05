@@ -76,7 +76,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvFile'])) {
 </head>
 <body>
     <div class="container">
+        
         <div class="inic" id="star1">
+
+            <div class="help">
+                <span>?</span>
+            </div>
+
             <div class="tittle">
                 <img src="images/icons/robot.png" alt="">
                 <h1>ROBOSUMA</h1>

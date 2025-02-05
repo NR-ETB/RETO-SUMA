@@ -13,6 +13,10 @@
 
         <div class="inic" id="star2">
 
+            <div class="help">
+                <span>?</span>
+            </div>
+
             <div class="tittle">
                 <img src="images/icons/robot.png" alt="">
                 <h1>ROBOSUMA</h1>
@@ -26,8 +30,8 @@
             </div>
 
             <div class="buttons-act-2">
-                <button class="act2" onclick="mid_Again();">Filtrar Nuevo</button>
-                <button class="act2" onclick="end();">Volver Inicio</button>
+                <img class="act2" onclick="mid_Again();" src="images/icons/reply.png" alt="">
+                <img class="act2" onclick="end();" src="images/icons/home.png" alt="">
             </div>
 
         </div>
