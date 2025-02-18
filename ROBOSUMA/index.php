@@ -145,47 +145,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
 
     <div class="container">
-
-        <div class="inic" id="star1" style="display: none;">
-
-            <div class="tittle">
-                <img src="View/images/icons/robot.png" alt="">
-                <h1>ROBOSUMA</h1>
-            </div>
-
-            <div class="band-content">
-                <div class="band">
-                    <img src="View/images/icons/download.png" alt="">
-                    <span class="add">Añade la base de datos en formato CVS</span>
-                </div>
-            </div>
-
-            <div class="buttons-act">
-                <button class="act" onclick="mid();">Filtrar</button>
-            </div>
-
-        </div>
-
-        <div class="inic" id="star2" style="display: none;">
-
-            <div class="tittle">
-                <img src="View/images/icons/robot.png" alt="">
-                <h1>ROBOSUMA</h1>
-            </div>
-
-            <div class="band-content">
-                <div class="band-2">
-                    <img src="View/images/icons/download.png" alt="">
-                    <span class="add-2">Descarga el la informacion filtrada en formato CVS</span>
-                </div>
-            </div>
-
-            <div class="buttons-act-2">
-                <button class="act2" onclick="mid_Again();">Filtrar Nuevo</button>
-                <button class="act2" onclick="end();">Volver Inicio</button>
-            </div>
-
-        </div>
         
         <div class="inic" id="star3">
 
