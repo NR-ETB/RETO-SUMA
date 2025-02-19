@@ -1,67 +1,86 @@
 <?php
-session_start(); // Iniciar sesión para almacenar datos
+// Iniciar la sesión
+session_start();
 
-// Procesamiento del archivo CSV
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['csvFile'])) {
-    if ($_FILES['csvFile']['error'] === UPLOAD_ERR_OK) {
-        $fileTmpPath = $_FILES['csvFile']['tmp_name'];
-        $fileName = $_FILES['csvFile']['name'];
-        $fileNameCmps = explode(".", $fileName);
-        $fileExtension = strtolower(end($fileNameCmps));
+// Incluir las clases necesarias de php-webdriver
+require '../vendor/autoload.php';
 
-        if ($fileExtension === 'csv') {
-            if (($handle = fopen($fileTmpPath, 'r')) !== false) {
-                $header = fgetcsv($handle, 1000, ",");
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\WebDriverBy;
+use Facebook\WebDriver\WebDriverExpectedCondition;
 
-                if ($header === false) {
-                    $_SESSION['message'] = "Error al leer el encabezado del archivo.";
-                    fclose($handle);
-                    header("Location: ".$_SERVER['PHP_SELF']);
-                    exit;
-                }
+// Generar un nuevo token CSRF si no existe
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
-                // Eliminar BOM si existe
-                if (strpos($header[0], "\xEF\xBB\xBF") === 0) {
-                    $header[0] = substr($header[0], 3);
-                }
+// Variable para almacenar el mensaje de salida
+$output = "";
 
-                // Convertir encabezados a minúsculas
-                $header = array_map('strtolower', $header);
+// Verificar si el formulario ha sido enviado
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Validar CSRF
+    if (isset($_POST['csrf_token'], $_SESSION['csrf_token']) && hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
+        
+        // Capturar y limpiar los datos del formulario
+        $username = trim($_POST['username'] ?? '');
+        $password = trim($_POST['password'] ?? '');
 
-                // Verificar si 'numorden' está presente en los encabezados
-                if (in_array('numorden', $header)) {
-                    $_SESSION['numOrdenes'] = []; // Resetear sesión antes de procesar
+        // Verificar que los campos no estén vacíos
+        if (!empty($username) && !empty($password)) {
 
-                    while (($data = fgetcsv($handle, 1000, ",")) !== false) {
-                        if (count($data) !== count($header)) {
-                            continue; // Saltar filas con número de columnas incorrecto
-                        }
+            // URL del servidor Selenium
+            $host = 'http://localhost:4444/wd/hub'; // Asegúrate de que Selenium esté corriendo
 
-                        $row = array_combine($header, $data);
-                        if ($row === false) {
-                            continue; // Saltar filas con datos mal formados
-                        }
+            // Crear una instancia de WebDriver para Chrome
+            $driver = RemoteWebDriver::create($host, DesiredCapabilities::chrome());
 
-                        $numOrden = $row['numorden'];
-                        $_SESSION['numOrdenes'][] = $numOrden; // Guardar en sesión
-                    }
+            try {
+                // Navegar a la página de inicio de sesión
+                $driver->get('https://suma.etb.co:6443/');
 
-                    fclose($handle);
-                    $_SESSION['message'] = "Archivo procesado correctamente.";
-                } else {
-                    $_SESSION['message'] = "El archivo CSV no contiene la columna 'numorden'.";
-                }
-            } else {
-                $_SESSION['message'] = "Error al abrir el archivo.";
+                // Esperar hasta que el campo de usuario esté presente
+                $driver->wait()->until(
+                    WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::name('username'))
+                );
+
+                // Ingresar el nombre de usuario
+                $driver->findElement(WebDriverBy::name('username'))->sendKeys($username);
+
+                // Ingresar la contraseña
+                $driver->findElement(WebDriverBy::name('password'))->sendKeys($password);
+
+                // Hacer clic en el botón de inicio de sesión
+                $driver->findElement(WebDriverBy::cssSelector('button[type="submit"]'))->click();
+
+                // Esperar hasta que la página de destino después del inicio de sesión esté cargada
+                $driver->wait()->until(
+                    WebDriverExpectedCondition::urlContains('View/mid.php') // Ajusta según la URL de destino
+                );
+
+                // Guardar datos en sesión para mantener autenticado al usuario
+                $_SESSION['loggedin'] = true;
+                $_SESSION['username'] = $username;
+
+                // Redirigir a mid.php
+                header("Location: View/mid.php");
+                exit;
+
+            } catch (Exception $e) {
+                $output = "⚠️ Error durante la automatización: " . $e->getMessage();
+            } finally {
+                // Cerrar el navegador
+                $driver->quit();
             }
+
         } else {
-            $_SESSION['message'] = "Por favor, suba un archivo con formato CSV.";
+            $output = "⚠️ Por favor, complete todos los campos.";
         }
+
     } else {
-        $_SESSION['message'] = "No se ha subido ningún archivo o ha ocurrido un error.";
+        die("❌ Token CSRF inválido.");
     }
-    header("Location: ".$_SERVER['PHP_SELF']);
-    exit;
 }
 ?>
 
