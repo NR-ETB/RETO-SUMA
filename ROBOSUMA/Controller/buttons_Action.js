@@ -21,4 +21,3 @@ function end() {
         location.href='../index.php';
   }, 4000);
 }
-
