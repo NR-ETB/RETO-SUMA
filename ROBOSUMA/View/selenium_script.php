@@ -69,23 +69,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "Primer Dato: " . $primerDato . "\n"; // Para depuración
             
                 try {
-                    // Asegurar que la página ha cargado completamente
-                    $driver->wait(10)->until(
-                        WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('body'))
+                    // Esperar que el primer iframe (o <object>) esté presente
+                    $iframePrincipal = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object')) // Cambia a 'iframe' si es necesario
                     );
-                
-                    // Intentar encontrar el campo NumOrden con diferentes métodos
-                    $campoNumOrden = $driver->wait(120)->until(
+
+                    // Cambiar al primer iframe
+                    $driver->switchTo()->frame($iframePrincipal);
+
+                    // Esperar el campo de entrada dentro del primer iframe
+                    $campoNumOrden = $driver->wait(10)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('NumOrden'))
                     );
-                
                     $campoNumOrden->sendKeys(trim($primerDato));
-                
-                    // Buscar y hacer clic en el botón de búsqueda
-                    $botonBuscar = $driver->wait(10)->until(
+
+                    // IMPORTANTE: Salimos del primer iframe antes de entrar al segundo
+                    $driver->switchTo()->defaultContent();
+
+                    // Esperar el segundo iframe
+                    $iframeSecundario = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object'))
+                    );
+
+                    // Cambiar al segundo iframe
+                    $driver->switchTo()->frame($iframeSecundario);
+
+                    // Esperar a que el botón esté clickeable
+                    $botonBuscar = $driver->wait(15)->until(
                         WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('btnbuscar'))
                     );
+
+                    // Hacer scroll al botón si está oculto
+                    $driver->executeScript("arguments[0].scrollIntoView();", [$botonBuscar]);
+
+                    // Hacer clic en el botón
                     $botonBuscar->click();
+
+                    // Esperar y hacer clic en el botón (no-button-modal2)
+                    $botonNoModal = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('no-button-modal2'))
+                    );
+                    $botonNoModal->click();
+
+                    // Esperar 5 segundos
+                    sleep(5);
+
+                    // Volver a hacer clic en el mismo botón
+                    $botonNoModal->click();
+
+                    // Esperar y hacer clic en el segundo botón (accept-button-modal)
+                    $botonAceptar = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('accept-button-modal'))
+                    );
+                    $botonAceptar->click();
+
+                    // Esperar y hacer clic en el botón 'BotonRetenciones'
+                    $botonRetenciones = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('BotonRetenciones'))
+                    );
+                    $botonRetenciones->click();
+
+                    // Esperar 3 segundos antes de continuar (opcional, si la página tarda en cargar)
+                    sleep(3);
+
+                    // Esperar y hacer clic en el botón con la clase 'fa fa-eye'
+                    $botonOjo = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector('button.fa.fa-eye'))
+                    );
+                    $botonOjo->click();
+
+                    // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
+                    $usuMod = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblTramiteFijaUsuarioModificacion'))
+                    )->getText();
+
+                    // Esperar y obtener el valor del span lblUsuarioPaso
+                    $usuPass = $driver->wait(10)->until(
+                        WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
+                    )->getText();
+
+                    // Ruta del archivo CSV
+                    $filePath = 'Retenciones y Usuarios.csv';
+
+                    // Comprobar si el archivo existe
+                    $fileExists = file_exists($filePath);
+
+                    // Abrir el archivo en modo escritura (lo creará si no existe)
+                    $file = fopen($filePath, 'a');
+
+                    // Si el archivo no existía, escribir los encabezados
+                    if (!$fileExists) {
+                        fputcsv($file, ['NumOrden', 'Usu_Mod', 'Usu_Pass']);
+                    }
+
+                    // Agregar la nueva fila con los datos obtenidos
+                    fputcsv($file, [$campoNumOrden, $usuMod, $usuPass]);
+
+                    // Cerrar el archivo
+                    fclose($file);
+
+                    echo "Archivo CSV 'Retenciones y Usuarios.csv' actualizado correctamente.";
+
                 }
                  catch (Exception $e) {
                     echo "Error en la ejecución: " . $e->getMessage() . "\n";
@@ -94,8 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
             } else {
                 echo "El archivo 'process.txt' no existe.\n";
-            }
-                                            
+            }                             
 
         } catch (TimeoutException $e) {
             // Manejar excepción de tiempo de espera
