@@ -163,7 +163,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
 
                     // Agregar la nueva fila con los datos obtenidos
-                    fputcsv($file, [$campoNumOrden, $usuMod, $usuPass]);
+                    fputcsv($file, [$primerDato, $usuMod, $usuPass]);
 
                     // Cerrar el archivo
                     fclose($file);
