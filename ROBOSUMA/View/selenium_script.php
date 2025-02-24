@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $driver->findElement(WebDriverBy::cssSelector('button[type="submit"]'))->click();
 
             // Esperar a que la URL cambie correctamente
-            $driver->wait(10)->until(
+            $driver->wait(3)->until(
                 WebDriverExpectedCondition::urlContains('ConectorMDM/Base?sOpcion=Consultas&sAdicional=Vista360')
             );
             
@@ -58,6 +58,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Leer el primer dato del archivo 'process.txt'
             $archivo = __DIR__ . '/process.txt';
+
+            ini_set('memory_limit', '512M');
             
             // Verificar si el archivo existe
             if (!file_exists($archivo)) {
@@ -91,15 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             while (($linea = fgets($gestor)) !== false) {
                 $primerDato = trim($linea);
                 if ($primerDato === '') {
-                    echo "Línea vacía encontrada, omitiendo...\n";
                     continue;
                 }
             
-                echo "Procesando Dato: " . $primerDato . "\n";
-            
                 try {
                     // Esperar que el primer iframe (o <object>) esté presente
-                    $iframePrincipal = $driver->wait(10)->until(
+                    $iframePrincipal = $driver->wait(3)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object')) // Cambia a 'iframe' si es necesario
                     );
             
@@ -107,7 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $driver->switchTo()->frame($iframePrincipal);
             
                     // Esperar el campo de entrada dentro del primer iframe
-                    $campoNumOrden = $driver->wait(10)->until(
+                    $campoNumOrden = $driver->wait(3)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('NumOrden'))
                     );
                     $campoNumOrden->sendKeys($primerDato);
@@ -116,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $driver->switchTo()->defaultContent();
             
                     // Esperar el segundo iframe
-                    $iframeSecundario = $driver->wait(10)->until(
+                    $iframeSecundario = $driver->wait(3)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object'))
                     );
             
@@ -124,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $driver->switchTo()->frame($iframeSecundario);
             
                     // Esperar a que el botón esté clickeable
-                    $botonBuscar = $driver->wait(15)->until(
+                    $botonBuscar = $driver->wait(3)->until(
                         WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('btnbuscar'))
                     );
             
@@ -133,56 +132,87 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
                     // Hacer clic en el botón
                     $botonBuscar->click();
+
+                    if (!function_exists('isElementVisible')) {
+                        function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout = 3): bool {
+                            try {
+                                $driver->wait($timeout)->until(
+                                    WebDriverExpectedCondition::visibilityOfElementLocated($by)
+                                );
+                                return true;
+                            } catch (NoSuchElementException $e) {
+                                return false;
+                            } catch (TimeoutException $e) {
+                                return false;
+                            }
+                        }
+                    }                    
             
                     // Esperar y hacer clic en el botón (no-button-modal2)
-                    $botonNoModal = $driver->wait(10)->until(
-                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('no-button-modal2'))
-                    );
-                    $botonNoModal->click();
-            
-                    // Esperar 5 segundos
-                    sleep(5);
-            
-                    // Volver a hacer clic en el mismo botón
-                    $botonNoModal->click();
-            
-                    // Esperar y hacer clic en el segundo botón (accept-button-modal)
-                    $botonAceptar = $driver->wait(10)->until(
-                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('accept-button-modal'))
-                    );
-                    $botonAceptar->click();
+                    if (isElementVisible($driver, WebDriverBy::id('no-button-modal2'))) {
+                        $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
+                        $botonNoModal->click();
+                        sleep(1); // Esperar 3 segundos
+                        $botonNoModal->click();
+                    }
+                    
+                    if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
+                        $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
+                        sleep(1); // Esperar 3 segundos
+                        $botonAceptar->click();
+                    }               
+                    
+                    if (isElementVisible($driver, WebDriverBy::id('continue-button-modal'))) {
+                        $botonAceptar = $driver->findElement(WebDriverBy::id('continue-button-modal'));
+                        sleep(1); // Esperar 3 segundos
+                        $botonAceptar->click();
+                    } 
             
                     // Esperar y hacer clic en el botón 'BotonRetenciones'
-                    $botonRetenciones = $driver->wait(10)->until(
+                    $botonRetenciones = $driver->wait(3)->until(
                         WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('BotonRetenciones'))
                     );
                     $botonRetenciones->click();
             
                     // Esperar 3 segundos antes de continuar (opcional, si la página tarda en cargar)
-                    sleep(3);
+                    sleep(1);
             
-                    // Esperar y hacer clic en el botón con la clase 'fa fa-eye'
-                    $botonOjo = $driver->wait(10)->until(
-                        WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::cssSelector('button.fa.fa-eye'))
-                    );
-                    $botonOjo->click();
+                    // Suponiendo que $primerDato contiene el identificador único del cliente
+                    $primerDato = trim($linea); // Por ejemplo, "RF-002430733"
+
+                    // Construir el XPath dinámico
+                    $xpath = sprintf("//tr[td[contains(text(), '%s')]]//button[contains(@class, 'fa-eye')]", $primerDato);
+
+                    try {
+                        // Esperar hasta que el botón "ojo" específico sea clicable
+                        $botonOjo = $driver->wait(3)->until(
+                            WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::xpath($xpath))
+                        );
+
+                        // Hacer clic en el botón "ojo"
+                        $botonOjo->click();
+
+                        // Continuar con el resto de la lógica después de hacer clic en el botón
+                        // ...
+
+                    }catch (TimeoutException $e) {
+                        echo "Tiempo de espera agotado al buscar el botón 'ojo' para el dato: $primerDato. Detalles: " . $e->getMessage();
+                    }
             
                     // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
-                    $usuMod = $driver->wait(10)->until(
+                    $usuMod = $driver->wait(3)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblTramiteFijaUsuarioModificacion'))
                     )->getText();
             
                     // Esperar y obtener el valor del span lblUsuarioPaso
-                    $usuPass = $driver->wait(10)->until(
+                    $usuPass = $driver->wait(3)->until(
                         WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                     )->getText();
             
                     // Agregar la nueva fila con los datos obtenidos al archivo CSV
                     fputcsv($file, [$primerDato, $usuMod, $usuPass]);
             
-                    echo "Registro añadido al CSV correctamente.\n";
-            
-                    sleep(3);
+                    sleep(1);
             
                     // Salir de cualquier iframe y volver al contexto principal
                     $driver->switchTo()->defaultContent();
@@ -199,23 +229,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Cerrar los archivos abiertos
             fclose($gestor);
-            fclose($file);
-            
-            echo "Proceso completado.\n";                       
+            fclose($file);                    
 
         } catch (TimeoutException $e) {
             // Manejar excepción de tiempo de espera
             echo "Error: Se supero el tiempo de Entrega. Detalles: " . $e->getMessage();
-        } catch (NoSuchElementException $e) {
-            // Manejar excepción de elemento no encontrado
-            echo "Error: No se encontró el elemento especificado. Detalles: " . $e->getMessage();
-        } catch (WebDriverException $e) {
-            // Manejar otras excepciones de WebDriver
-            echo "Error de WebDriver: " . $e->getMessage();
-        } catch (Exception $e) {
-            // Manejar cualquier otra excepción
-            echo "Error general: " . $e->getMessage();
-        } finally {
+        }finally {
             // Cerrar el WebDriver
             $driver->quit();
         }
