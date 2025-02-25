@@ -1,0 +1,361 @@
+/* Importar fuente*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+/* Importar fuente*/
+
+/* Variables de Colores */
+:root{
+    --orange-etb: #FF6523;
+    --bgray-etb: #d8dde6;
+    --b3gray-etb: #E4E8F0;
+    --gray-etb: #f4f6f9;
+    --withe-etb: #fff;
+    --bblue-etb: #214780;
+    --fblue-etb: #14C1EA;
+    --pblue-etb: #54698d;
+    --black-etb: #333333;
+    --b2gray-etb: #969492;
+}
+/* Variables de Colores */
+
+/* Reiniciar el CSS */
+*{ 
+ 
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+ 
+}
+/* Reiniciar el CSS */
+
+/* Generalidades del Cuerpo */
+body{
+ 
+    font-family: 'Poppins', sans-serif;
+    overflow-x: hidden;
+ 
+}
+/* Generalidades del Cuerpo */
+
+/* CSS del Inicio */
+.container{
+    background-image: url('../images/background/figures.jpg');
+    background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+    background-position: center; /* Centra la imagen */
+    background-repeat: no-repeat; /* Evita que la imagen se repita */
+    height: 959px;
+}
+
+.inic{
+    background-color: var(--withe-etb);
+    height: 756px;
+    width: 1536px;
+    border-radius: 15px;
+    position: relative;
+    left: 195px;
+    top: 90px;
+    z-index: 1;
+}
+
+.help{
+    color: var(--orange-etb);
+    font-size: 30px;
+    font-weight: 900;
+    position: absolute;
+    right: 0;
+    margin: 5px 15px 0 0;
+    cursor: pointer;
+}
+
+.tittle{
+    display: flex;
+    color: var(--orange-etb);
+    font-size: 24px;
+    font-weight: 900;
+    text-align: center;
+    position: relative;
+    left: 590px;
+    top: 30px;
+}
+
+.tittle img{
+    height: 100px;
+    width: 100px;
+}
+
+.tittle h1{
+    margin-top: 30px;
+}
+
+.band-content{
+    border: 3px solid var(--bblue-etb);
+    border-radius: 25px;
+    width: 836px;
+    height: 203px;
+    position: relative;
+    left: 380px;
+    top: 150px;
+    cursor: pointer;
+}
+
+.band img{
+    width: 70px;
+    height: 70px;
+    position: relative;
+    left: 380px;
+    top: 40px;
+}
+
+.data{
+    display: grid;
+    position: relative;
+    top: 160px;
+    left: 550px;
+}
+
+.data img{
+    width: 45px;
+    height: 45px;
+    position: relative;
+    left: 65px;
+    top: 13px;
+}
+
+.data input{
+    background-color: var(--b3gray-etb);
+    border: none;
+    width: 390px;
+    height: 70px;
+    margin-bottom: 25px;
+    padding-left: 75px;
+    padding-top: 2px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 19px;
+    color: var(--black-etb);
+}
+
+.add{
+    font-size: 18px;
+    margin-left: 160px;
+    position: relative;
+    top: 90px;
+    color: var(--bblue-etb);
+    font-weight: 500;
+}
+
+.buttons-act{
+  position: relative;
+  left: 150px;
+  top: 80px;
+}
+
+.act{
+  border: 3px solid var(--bblue-etb);
+  border-radius: 45px;
+  background-color: var(--withe-etb);
+  color: var(--bblue-etb);
+  font-size: 24px;
+  font-weight: 900;
+  width: 200px;
+  height: 80px;
+  cursor: pointer;
+} 
+
+.buttons-act-2{
+    position: relative;
+    left: 550px;
+    top: 230px;
+    display: flex;
+}
+
+.band-2 img{
+    width: 70px;
+    height: 70px;
+    position: relative;
+    left: 230px;
+    bottom: 10px;
+    transform: rotate(180deg)
+}
+
+.custom-button{
+    width: 830px;
+    height: 197px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.add-2{
+    font-size: 18px;
+    margin-right: 50px;
+    position: relative;
+    top: 30px;
+    color: var(--bblue-etb);
+    font-weight: 500;
+}
+
+.act2{
+    width: 130px;
+    cursor: pointer;
+    margin-left: 80px;
+}
+
+.backdrop {
+    position: fixed; /* Se mantiene fijo en pantalla */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Oscurecimiento con transparencia */
+    z-index: 0; /* Se coloca detrás del modal */
+}
+/* CSS del Inicio */
+
+/* CSS de los Modales y sus Animaciones */
+.modal .modal-title{
+    width: 100%;
+    text-align: center;
+    color: var(--color-bc);
+    display: flex;
+    column-gap: 10px;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+}
+.modal-loading{
+    z-index: 893748;
+}
+.modal-susc .modal-dialog, .modal-loading .modal-dialog{
+    display: flex;
+    justify-content: center;
+}
+.modal-susc .modal-content{
+    width: 320px;
+}
+.modal-susc .modal-title, .modal-loading .modal-title{
+    width: 100%;
+    text-align: center;
+    color: #1285B6;
+}
+.modal-susc .modal-footer{
+    border: 0px solid;
+    display: flex;
+    column-gap: 20px;
+    justify-content: center;
+}
+.modal-susc .confirmacion p{
+    color: #46b8da;
+    font-size: 15px;
+    text-align: center;
+}
+.modal-susc .modal-footer button{
+    background: #f26821;
+    color: white;
+    border: none;
+}
+.modal-loading .modal-header{
+    padding-left: 5px;
+    padding-right: 5px;
+}
+.modal-loading .modal-title{
+    font-size: 20px;
+    color: var(--color-bc);
+    font-weight: bold;
+}
+.modal-loading .modal-content{
+    width: 375px;
+}
+.modal-loading .modal-body{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: center;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;;
+}
+.text-spiner p{
+    color: var(--color-bc);
+    font-size: 14px;
+    margin: 0px;
+    padding: 0px;
+}
+.lds-spinner {
+    color: official;
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-spinner div {
+    transform-origin: 40px 40px;
+    animation: lds-spinner 1.2s linear infinite;
+  }
+  .lds-spinner div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 37px;
+    width: 6px;
+    height: 18px;
+    border-radius: 20%;
+    background: var(--color-bc);
+  }
+  .lds-spinner div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -1.1s;
+  }
+  .lds-spinner div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -1s;
+  }
+  .lds-spinner div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.9s;
+  }
+  .lds-spinner div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.8s;
+  }
+  .lds-spinner div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.7s;
+  }
+  .lds-spinner div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.6s;
+  }
+  .lds-spinner div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.5s;
+  }
+  .lds-spinner div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.4s;
+  }
+  .lds-spinner div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.3s;
+  }
+  .lds-spinner div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.2s;
+  }
+  .lds-spinner div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.1s;
+  }
+  .lds-spinner div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+  }
+  @keyframes lds-spinner {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+/* CSS de los Modales y sus Animaciones */
