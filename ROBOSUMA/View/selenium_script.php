@@ -21,6 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Configurar las opciones de Chrome
         $options = new ChromeOptions();
         $options->addArguments([
+            '--headless',
             '--disable-gpu',
             '--no-sandbox',
             '--disable-dev-shm-usage',
@@ -173,16 +174,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $botonAceptar->click();
                     } 
 
-                    sleep(4); 
+                    sleep(5); 
             
                     // Esperar y hacer clic en el botón 'BotonRetenciones'
                     $botonRetenciones = $driver->wait(3)->until(
                         WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('BotonRetenciones'))
                     );
                     $botonRetenciones->click();
-            
-                    // Esperar 1 segundos antes de continuar (opcional, si la página tarda en cargar)
-                    sleep(1);
             
                     // Suponiendo que $primerDato contiene el identificador único del cliente
                     $primerDato = trim($linea); // Por ejemplo, "RF-002430733"
@@ -218,6 +216,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
                     // Agregar la nueva fila con los datos obtenidos al archivo CSV
                     fputcsv($file, [$primerDato, $usuMod, $usuPass, 'Navegacion Exitosa']);
+
+                    $archivoHistory = __DIR__ . '/history.txt';
+
+                    // Leer todas las líneas del archivo process.txt
+                    $lineas = file($archivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+                    
+                    if ($lineas && count($lineas) > 0) {
+                        // Extraer el primer dato procesado
+                        $datoProcesado = array_shift($lineas);
+                    
+                        // Guardar el dato en history.txt
+                        file_put_contents($archivoHistory, $datoProcesado . "\n", FILE_APPEND);
+                    
+                        // Sobrescribir process.txt sin la primera línea
+                        file_put_contents($archivo, implode("\n", $lineas) . "\n");
+                    }
             
                     exec('pkill -f chrome');
             
@@ -226,6 +240,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
                     // Refrescar la página para preparar la siguiente iteración
                     $driver->navigate()->refresh();
+                    
             
                 } catch (Exception $e) {
                     echo "Error en la ejecución para el dato '$primerDato': " . $e->getMessage() . "\n";

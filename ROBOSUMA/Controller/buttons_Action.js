@@ -1,31 +1,23 @@
 function mid() {
-  $('#modal-loading').modal('toggle');
-  setTimeout(() => {
-      $('#modal-loading').modal('hide');
-      location.href='View/mid.php';
-}, 4000);
+
+    location.href='View/mid.php';
+    
 }
 
 function mid_Again() {
-    $('#modal-loading').modal('toggle');
-    setTimeout(() => {
-        $('#modal-loading').modal('hide');
-        location.href='./mid.php';
-  }, 4000);
+
+    location.href='./mid.php';
+
 }
 
 function next_End() {
-  $('#modal-loading').modal('toggle');
-  setTimeout(() => {
-      $('#modal-loading').modal('hide');
-      location.href='./end.php';
-}, 4000);
+
+    location.href='./end.php';
+
 }
 
 function end() {
-    $('#modal-loading').modal('toggle');
-    setTimeout(() => {
-        $('#modal-loading').modal('hide');
-        location.href='../index.php';
-  }, 4000);
+
+    location.href='../index.php';
+
 }
