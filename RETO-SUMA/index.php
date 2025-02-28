@@ -53,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csvFile'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="View/css/style2.css">
     <link rel="shortcut icon" href="View/images/icons/window.png" />
-    <title>RoboSuma</title>
+    <title>Reto-Suma</title>
 </head>
 <body>
     <div class="container">
@@ -66,7 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csvFile'])) {
 
             <div class="tittle">
                 <img src="View/images/icons/robot.png" alt="">
-                <h1>ROBOSUMA</h1>
+                <h1>RETO-SUMA</h1>
             </div>
 
             <?php

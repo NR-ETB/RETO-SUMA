@@ -10,6 +10,7 @@ use Facebook\WebDriver\WebDriverBy;
 use Facebook\WebDriver\WebDriverExpectedCondition;
 use Facebook\WebDriver\Exception\TimeoutException;
 use Facebook\WebDriver\Exception\NoSuchElementException;
+use Facebook\WebDriver\WebDriverWait;
 
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -102,11 +103,23 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                 
                     try {
 
+                        $timeout = 0.7;
+                        // Intervalo de sondeo en milisegundos
+                        $intervalo = 500; // Puedes ajustar este valor según tus necesidades
+
+                        $wait = new WebDriverWait($driver, $timeout, $intervalo);
+
+                        $timeout2 = 1.7;
+                        // Intervalo de sondeo en milisegundos
+                        $intervalo2 = 500; // Puedes ajustar este valor según tus necesidades
+
+                        $wait2 = new WebDriverWait($driver, $timeout2, $intervalo2);
+
                         // Capturar el tiempo de inicio
                         $horaInicio = microtime(true);
 
                         // Esperar que el primer iframe (o <object>) esté presente
-                        $iframePrincipal = $driver->wait(2)->until(
+                        $iframePrincipal = $wait ->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object')) // Cambia a 'iframe' si es necesario
                         );
                 
@@ -114,7 +127,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         $driver->switchTo()->frame($iframePrincipal);
                 
                         // Esperar el campo de entrada dentro del primer iframe
-                        $campoNumOrden = $driver->wait(2)->until(
+                        $campoNumOrden = $wait ->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('NumOrden'))
                         );
                         $campoNumOrden->sendKeys($primerDato);
@@ -123,7 +136,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         $driver->switchTo()->defaultContent();
                 
                         // Esperar el segundo iframe
-                        $iframeSecundario = $driver->wait(2)->until(
+                        $iframeSecundario = $wait ->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::tagName('object'))
                         );
                 
@@ -131,7 +144,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         $driver->switchTo()->frame($iframeSecundario);
                 
                         // Esperar a que el botón esté clickeable
-                        $botonBuscar = $driver->wait(2)->until(
+                        $botonBuscar = $wait ->until(
                             WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('btnbuscar'))
                         );
                 
@@ -142,7 +155,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         $botonBuscar->click();
 
                         if (!function_exists('isElementVisible')) {
-                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout = 3): bool {
+                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout = 2): bool {
                                 try {
                                     $driver->wait($timeout)->until(
                                         WebDriverExpectedCondition::visibilityOfElementLocated($by)
@@ -163,13 +176,13 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         if (isElementVisible($driver, WebDriverBy::id('no-button-modal2'))) {
                             $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
                             $botonNoModal->click();
-                            sleep(1); // Esperar 1 segundos
+                            usleep(800 * 1000); // Esperar 0.8 segundos
                             $botonNoModal->click();
                         }
                         
                         if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
-                            sleep(1); // Esperar 1 segundos
+                            usleep(800 * 1000); // Esperar 0.8 segundos
                             $botonAceptar->click();
                         }               
                         
@@ -179,7 +192,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                         } 
                 
                         // Esperar y hacer clic en el botón 'BotonRetenciones'
-                        $botonRetenciones = $driver->wait(2)->until(
+                        $botonRetenciones = $wait2->until(
                             WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('BotonRetenciones'))
                         );
                         $botonRetenciones->click();
@@ -196,7 +209,7 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                             $botonOjo->click();
                             // Continuar con la lógica después de hacer clic en el botón
                         } else {
-                            $observacion = "No se encontró referencia para el ID $primerDato. Se requiere revisión manual.";
+                            $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revisión manual.";
                             fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
 
@@ -207,12 +220,12 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
                             $driver->navigate()->refresh();
                         }
                         // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
-                        $usuMod = $driver->wait(1)->until(
+                        $usuMod = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblTramiteFijaUsuarioModificacion'))
                         )->getText();
                 
                         // Esperar y obtener el valor del span lblUsuarioPaso
-                        $usuPass = $driver->wait(1)->until(
+                        $usuPass = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                         )->getText();
                 
@@ -263,15 +276,18 @@ use Facebook\WebDriver\Exception\NoSuchElementException;
 
             } catch (TimeoutException $e) {
                 // Manejar excepción de tiempo de espera
-                echo "Error: Se supero el tiempo de Entrega. Detalles: " . $e->getMessage();
+                echo "<script type='text/javascript'>
+                    alert('Error: Se superó el tiempo de entrega. Detalles: " . addslashes($e->getMessage()) . "');
+                </script>";
                 $driver->quit();
             }catch (NoSuchElementException $e) {
                 // Manejar excepción de tiempo de espera
-                echo "Error: Elemento no Encontrado. Detalles: " . $e->getMessage();
+                echo "<script type='text/javascript'>
+                    alert('Error: Elemento no Encontrado. Detalles: " . addslashes($e->getMessage()) . "');
+                </script>";
                 $driver->quit();
             }
             finally {
-                // Cerrar el WebDriver
                 $driver->quit();
             }
         }
