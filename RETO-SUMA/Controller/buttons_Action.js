@@ -1,23 +1,11 @@
 function mid() {
-
-    location.href='View/mid.php';
-    
-}
-
-function mid_Again() {
-
-    location.href='./mid.php';
-
+    location.href='./mid_1.php';
 }
 
 function next_End() {
-
-    location.href='./end.php';
-
+    location.href='./end_1.php';
 }
 
 function end() {
-
-    location.href='../index.php';
-
+    location.href='./ini_1.php';
 }
