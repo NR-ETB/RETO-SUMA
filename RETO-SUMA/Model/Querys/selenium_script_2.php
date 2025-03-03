@@ -62,7 +62,7 @@ use Facebook\WebDriver\WebDriverWait;
                 $_SESSION['loggedin'] = true;
                 
                 // Leer el primer dato del archivo 'process_2.txt'
-                $archivo = __DIR__ . '/process_2.txt';
+                $archivo = realpath(__DIR__ . '/../../View/rob2/process_2.txt');
 
                 ini_set('memory_limit', '512M');
                 
@@ -78,7 +78,7 @@ use Facebook\WebDriver\WebDriverWait;
                 }
                 
                 // Ruta del archivo CSV
-                $filePath = 'Retenciones_y_Usuarios_2.csv';
+                $filePath = '../../View/rob2/Retenciones_y_Usuarios_2.csv';
                 
                 // Comprobar si el archivo CSV existe para agregar encabezados si es necesario
                 $fileExists = file_exists($filePath);
@@ -103,13 +103,13 @@ use Facebook\WebDriver\WebDriverWait;
                 
                     try {
 
-                        $timeout = 0.7;
+                        $timeout = 0.6;
                         // Intervalo de sondeo en milisegundos
                         $intervalo = 500; // Puedes ajustar este valor según tus necesidades
 
                         $wait = new WebDriverWait($driver, $timeout, $intervalo);
 
-                        $timeout2 = 1.7;
+                        $timeout2 = 1.6;
                         // Intervalo de sondeo en milisegundos
                         $intervalo2 = 500; // Puedes ajustar este valor según tus necesidades
 
@@ -280,15 +280,21 @@ use Facebook\WebDriver\WebDriverWait;
                     alert('Error: Se superó el tiempo de entrega. Detalles: " . addslashes($e->getMessage()) . "');
                 </script>";
                 $driver->quit();
+
+                header("Location: ../../View/rob2/mid_2.php");
             }catch (NoSuchElementException $e) {
                 // Manejar excepción de tiempo de espera
                 echo "<script type='text/javascript'>
                     alert('Error: Elemento no Encontrado. Detalles: " . addslashes($e->getMessage()) . "');
                 </script>";
                 $driver->quit();
+
+                header("Location: ../../View/rob2/mid_2.php");
             }
             finally {
                 $driver->quit();
+
+                header("Location: ../../View/rob2/end_2.php");
             }
         }
     }

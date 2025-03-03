@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/style.css">
-    <link rel="shortcut icon" href="./images/icons/window.png" />
-    <title>Reto-Suma</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="shortcut icon" href="../images/icons/window.png" />
+    <title>Reto-Suma Bot1</title>
 </head>
 <body>
 
@@ -18,8 +18,8 @@
             </div>
 
             <div class="tittle">
-                <img src="./images/icons/robot.png" alt="">
-                <h1>RETO-SUMA</h1>
+                <img src="../images/icons/robot.png" alt="">
+                <h1>RETO-SUMA1</h1>
             </div>
 
             <?php
@@ -40,12 +40,12 @@
                     <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
 
                     <div>
-                        <img src="./images/icons/email.png" alt="Icono de correo electrónico">
+                        <img src="../images/icons/email.png" alt="Icono de correo electrónico">
                         <input type="text" name="username" placeholder="Usuario_Suma" required>
                     </div>
 
                     <div>
-                        <img src="./images/icons/pass.png" alt="Icono de contraseña">
+                        <img src="../images/icons/pass.png" alt="Icono de contraseña">
                         <input type="password" name="password" placeholder="Contraseña_Suma" required>
                     </div>
 
@@ -63,8 +63,8 @@
 
     </div>
 
-<script src="bootstrap/jquery.js"></script>
-<script src="bootstrap/bootstrap.bundle.min.js"></script>
-<script src="../Controller/buttons_Action.js"></script>
+<script src="../bootstrap/jquery.js"></script>
+<script src="../bootstrap/bootstrap.bundle.min.js"></script>
+<script src="../../Controller/buttons_Action.js"></script>
 </body>
 </html>

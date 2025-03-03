@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/style2.css">
     <link rel="shortcut icon" href="../images/icons/window.png" />
-    <title>Reto-Suma</title>
+    <title>Reto-Suma Bot3</title>
 </head>
 <body>
 
@@ -19,7 +19,7 @@
 
             <div class="tittle">
                 <img src="../images/icons/robot.png" alt="">
-                <h1>RETO-SUMA</h1>
+                <h1>RETO-SUMA3</h1>
             </div>
 
             <div class="band-content">

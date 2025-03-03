@@ -1,6 +1,6 @@
 <?php
 // Nombre del archivo CSV
-$nombreCSV = 'Retenciones_y_Usuarios.csv';
+$nombreCSV = '../../View/rob/Retenciones_y_Usuarios_1.csv';
 
 // Verificar si el archivo existe
 if (file_exists($nombreCSV)) {
