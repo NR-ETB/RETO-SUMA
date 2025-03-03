@@ -279,17 +279,27 @@ use Facebook\WebDriver\WebDriverWait;
                 echo "<script type='text/javascript'>
                     alert('Error: Se superó el tiempo de entrega. Detalles: " . addslashes($e->getMessage()) . "');
                 </script>";
-                $driver->quit();
 
-                header("Location: ../../View/rob/mid_1.php");
+                // Salir de cualquier iframe y volver al contexto principal
+                $driver->switchTo()->defaultContent();
+                    
+                // Refrescar la página para preparar la siguiente iteración
+                $driver->navigate()->refresh();
+
+                //header("Location: ../../View/rob/mid_1.php");
             }catch (NoSuchElementException $e) {
                 // Manejar excepción de tiempo de espera
                 echo "<script type='text/javascript'>
                     alert('Error: Elemento no Encontrado. Detalles: " . addslashes($e->getMessage()) . "');
                 </script>";
-                $driver->quit();
 
-                header("Location: ../../View/rob/mid_1.php");
+                // Salir de cualquier iframe y volver al contexto principal
+                $driver->switchTo()->defaultContent();
+                    
+                // Refrescar la página para preparar la siguiente iteración
+                $driver->navigate()->refresh();
+
+                //header("Location: ../../View/rob/mid_1.php");
             }
             finally {
                 $driver->quit();

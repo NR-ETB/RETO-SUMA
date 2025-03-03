@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csvFile'])) {
         <div class="inic" id="star1">
 
             <div class="help">
-                <span>?</span>
+                <a href="../../Model/Documents/manReto-Suma.pdf" target="_blank"><span>?</span></a>
             </div>
 
             <div class="tittle">
