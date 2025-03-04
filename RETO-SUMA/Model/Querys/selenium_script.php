@@ -103,7 +103,7 @@ use Facebook\WebDriver\WebDriverWait;
                 
                     try {
 
-                        $timeout = 0.6;
+                        $timeout = 0.7;
                         // Intervalo de sondeo en milisegundos
                         $intervalo = 500; // Puedes ajustar este valor según tus necesidades
 
@@ -176,13 +176,13 @@ use Facebook\WebDriver\WebDriverWait;
                         if (isElementVisible($driver, WebDriverBy::id('no-button-modal2'))) {
                             $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
                             $botonNoModal->click();
-                            usleep(800 * 1000); // Esperar 0.8 segundos
+                            usleep(700 * 1000); // Esperar 0.7 segundos
                             $botonNoModal->click();
                         }
                         
                         if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
-                            usleep(800 * 1000); // Esperar 0.8 segundos
+                            usleep(700 * 1000); // Esperar 0.7 segundos
                             $botonAceptar->click();
                         }               
                         
@@ -286,7 +286,7 @@ use Facebook\WebDriver\WebDriverWait;
                 // Refrescar la página para preparar la siguiente iteración
                 $driver->navigate()->refresh();
 
-                //header("Location: ../../View/rob/mid_1.php");
+                // header("Location: ../../View/rob/mid_1.php");
             }catch (NoSuchElementException $e) {
                 // Manejar excepción de tiempo de espera
                 echo "<script type='text/javascript'>
@@ -299,7 +299,7 @@ use Facebook\WebDriver\WebDriverWait;
                 // Refrescar la página para preparar la siguiente iteración
                 $driver->navigate()->refresh();
 
-                //header("Location: ../../View/rob/mid_1.php");
+                // header("Location: ../../View/rob/mid_1.php");
             }
             finally {
                 $driver->quit();
