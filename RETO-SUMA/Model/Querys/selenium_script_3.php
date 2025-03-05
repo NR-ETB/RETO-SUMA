@@ -61,20 +61,20 @@ use Facebook\WebDriver\WebDriverWait;
                 // Establecer sesión de usuario logueado
                 $_SESSION['loggedin'] = true;
                 
-                // Leer el primer dato del archivo 'process_3.txt'
-                $archivo = realpath(__DIR__ . '/../../View/rob3/process_3.txt');
+                // Leer el primer dato del archivo 'process_3.csv'
+                $archivo = realpath(__DIR__ . '/../../View/rob3/process_3.csv');
 
                 ini_set('memory_limit', '512M');
                 
                 // Verificar si el archivo existe
                 if (!file_exists($archivo)) {
-                    die("El archivo 'process_3.txt' no existe.\n");
+                    die("El archivo 'process_3.csv' no existe.\n");
                 }
                 
                 // Abrir el archivo en modo lectura
                 $gestor = fopen($archivo, 'r');
                 if (!$gestor) {
-                    die("No se pudo abrir el archivo 'process_3.txt'.\n");
+                    die("No se pudo abrir el archivo 'process_3.csv'.\n");
                 }
                 
                 // Ruta del archivo CSV
@@ -235,7 +235,7 @@ use Facebook\WebDriver\WebDriverWait;
 
                         $archivoHistory = __DIR__ . '/history_3.txt';
 
-                        // Leer todas las líneas del archivo process_3.txt
+                        // Leer todas las líneas del archivo process_3.csv
                         $lineas = file($archivo, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                         
                         if ($lineas && count($lineas) > 0) {
@@ -245,7 +245,7 @@ use Facebook\WebDriver\WebDriverWait;
                             // Guardar el dato en history.txt
                             file_put_contents($archivoHistory, $datoProcesado . "\n", FILE_APPEND);
                         
-                            // Sobrescribir process_3.txt sin la primera línea
+                            // Sobrescribir process_3.csv sin la primera línea
                             file_put_contents($archivo, implode("\n", $lineas) . "\n");
                         }
                 
