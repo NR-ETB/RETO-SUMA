@@ -259,7 +259,7 @@ use Facebook\WebDriver\WebDriverWait;
                     } catch (Exception $e) {
 
                         $observacion = "No fue posible realizar la navegacion de $primerDato. Se requiere una Segunda Subida o Revision Manual.";
-                        fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
+                        fputcsv($file, [$primerDato, $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                         echo $observacion . "\n";
 
                         // Manejo de la excepción

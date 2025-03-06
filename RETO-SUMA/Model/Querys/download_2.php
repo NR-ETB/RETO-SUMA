@@ -5,9 +5,11 @@ $rutaCSV = '../../View/rob/process_2.cvs';
 
 // Nombre del archivo CSV
 $nombreArchivo = 'Retenciones_y_Usuarios_2.csv';
+$nombreArchivo_2 = 'Retenciones_y_Usuarios_Falla_2.csv';
 
 // Ruta completa al archivo
 $rutaCompleta = $rutaCarpeta . $nombreArchivo;
+$rutaCompleta_2 = $rutaCarpeta . $nombreArchivo_2;
 
 if (file_exists($rutaCSV)) {
     // Abrir el archivo en modo escritura para vaciar su contenido
@@ -35,6 +37,23 @@ if (file_exists($rutaCompleta)) {
     // Eliminar el archivo del servidor después de la descarga
     unlink($rutaCompleta);
     unlink($rutaCSV);
+    exit;
+} else {
+    echo "El archivo no está disponible para descargar.";
+}
+
+if (file_exists($rutaCompleta_2)) {
+    // Establecer las cabeceras para la descarga
+    header('Content-Type: text/csv');
+    header('Content-Disposition: attachment; filename="' . $nombreArchivo_2 . '"');
+    header('Content-Length: ' . filesize($rutaCompleta_2));
+
+    // Leer el archivo y enviarlo al navegador
+    readfile($rutaCompleta_2);
+
+    // Eliminar el archivo del servidor después de la descarga
+    unlink($rutaCompleta_2);
+    unlink($rutaCVS);
     exit;
 } else {
     echo "El archivo no está disponible para descargar.";

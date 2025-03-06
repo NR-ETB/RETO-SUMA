@@ -225,7 +225,7 @@ use Facebook\WebDriver\WebDriverWait;
                             // Continuar con la lógica después de hacer clic en el botón
                         } else {
                             $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revisión manual.";
-                            fputcsv($file_2, [$primerDato,$observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
+                            fputcsv($file_2, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
 
                             // Salir de cualquier iframe y volver al contexto principal
@@ -258,7 +258,7 @@ use Facebook\WebDriver\WebDriverWait;
                     } catch (Exception $e) {
 
                         $observacion = "No fue posible realizar la navegacion de $primerDato. Se requiere una Segunda Subida o Revision Manual.";
-                        fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
+                        fputcsv($file_2, [$primerDato,$observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                         echo $observacion . "\n";
 
                         // Manejo de la excepción
