@@ -17,31 +17,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csvFile'])) {
                 // Omitir la primera línea (cabecera)
                 fgetcsv($handle);
 
-                // Abrir o crear el archivo process.txt para agregar datos
-                $outputFile = './process.txt';
+                // Abrir o crear el archivo process.csv para agregar datos
+                $outputFile = './process.csv';
                 $modo = file_exists($outputFile) ? 'a' : 'w';
 
                 if (($outputHandle = fopen($outputFile, $modo)) !== FALSE) {
-                    // Leer cada línea del CSV y escribirla en process.txt
+                    // Leer cada línea del CSV y escribirla en process.csv
                     while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
                         // Convertir el array en una línea de texto separada por comas
                         $linea = implode(',', $data) . PHP_EOL;
                         fwrite($outputHandle, $linea);
                     }
                     fclose($outputHandle);
-                    $mensaje = "Los datos se han almacenado correctamente en 'process.txt'.";
+                    echo "<script type='text/javascript'>
+                        alert('Base Exitosamente Anexada');
+                    </script>";
                 } else {
-                    $mensaje = "No se pudo abrir 'process.txt' para escritura.";
+                    // $mensaje = "No se pudo abrir 'process.csv' para escritura.";
                 }
                 fclose($handle);
             } else {
-                $mensaje = "No se pudo abrir el archivo CSV.";
+                echo "<script type='text/javascript'>
+                    alert('Error al Abrir la Base');
+                </script>";
             }
         } else {
-            $mensaje = "Por favor, sube un archivo con formato CSV.";
+            // $mensaje = "Por favor, sube un archivo con formato CSV.";
         }
     } else {
-        $mensaje = "Error al subir el archivo.";
+        echo "<script type='text/javascript'>
+            alert('Error al Subir la Base');
+        </script>";
     }
 }
 ?>
