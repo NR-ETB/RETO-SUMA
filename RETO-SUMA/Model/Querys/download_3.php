@@ -1,6 +1,6 @@
 <?php
 // Ruta de la carpeta donde se encuentra el archivo
-$rutaCarpeta = '../../View/ro3/';
+$rutaCarpeta = '../../View/rob3/';
 $rutaCSV = '../../View/rob/process_3.cvs';
 
 // Nombre del archivo CSV

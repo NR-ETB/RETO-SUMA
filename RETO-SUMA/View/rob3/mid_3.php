@@ -110,7 +110,7 @@ use Facebook\WebDriver\WebDriverWait;
                 }
                 
                 // Procesar cada línea del archivo
-                while (($linea = fgets($gestor)) !== false) {
+                while (($linea = fgets($gestor)) > 0) {
                     $primerDato = trim($linea);
                     if ($primerDato === '') {
                         continue;
@@ -118,13 +118,13 @@ use Facebook\WebDriver\WebDriverWait;
                 
                     try {
 
-                        $timeout = 0.65;
+                        $timeout = 0.63;
                         // Intervalo de sondeo en milisegundos
                         $intervalo = 500; // Puedes ajustar este valor según tus necesidades
 
                         $wait = new WebDriverWait($driver, $timeout, $intervalo);
 
-                        $timeout2 = 1.65;
+                        $timeout2 = 1.63;
                         // Intervalo de sondeo en milisegundos
                         $intervalo2 = 500; // Puedes ajustar este valor según tus necesidades
 
@@ -191,13 +191,13 @@ use Facebook\WebDriver\WebDriverWait;
                         if (isElementVisible($driver, WebDriverBy::id('no-button-modal2'))) {
                             $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
                             $botonNoModal->click();
-                            usleep(800 * 1000); // Esperar 0.8 segundos
+                            usleep(750 * 1000); // Esperar 0.8 segundos
                             $botonNoModal->click();
                         }
                         
                         if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
-                            usleep(800 * 1000); // Esperar 0.8 segundos
+                            usleep(750 * 1000); // Esperar 0.8 segundos
                             $botonAceptar->click();
                         }               
                         
@@ -224,15 +224,21 @@ use Facebook\WebDriver\WebDriverWait;
                             $botonOjo->click();
                             // Continuar con la lógica después de hacer clic en el botón
                         } else {
+
+                            $horaFin = microtime(true);
+                            
                             $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revisión manual.";
                             fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
+
+                            $exceptionHandled = true; // Marcar que la excepción fue manejada
 
                             // Salir de cualquier iframe y volver al contexto principal
                             $driver->switchTo()->defaultContent();
                     
                             // Refrescar la página para preparar la siguiente iteración
                             $driver->navigate()->refresh();
+
                         }
                         // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
                         $usuMod = $wait->until(
@@ -256,19 +262,19 @@ use Facebook\WebDriver\WebDriverWait;
                             
                 
                     } catch (Exception $e) {
-
-                        $observacion = "No fue posible realizar la navegacion de $primerDato. Se requiere una Segunda Subida o Revision Manual.";
-                        fputcsv($file_2, [$primerDato,$observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
-                        echo $observacion . "\n";
-
-                        // Manejo de la excepción
-                        $horaFin = microtime(true);
-                        $driver->switchTo()->defaultContent();
-                        $driver->navigate()->refresh();
-
-                        // Continuar con la siguiente iteración del bucle
-                        continue;
-                        
+                        if (!$exceptionHandled) {
+                            $horaFin = microtime(true);
+                    
+                            $observacion = "No fue posible realizar la navegación de $primerDato. Se requiere una segunda subida o revisión manual.";
+                            fputcsv($file_2, [$primerDato, $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
+                            echo $observacion . "\n";
+                    
+                            // Salir de cualquier iframe y volver al contexto principal
+                            $driver->switchTo()->defaultContent();
+                    
+                            // Refrescar la página para preparar la siguiente iteración
+                            $driver->navigate()->refresh();
+                        }
                     }
                 }             
                 
@@ -290,7 +296,7 @@ use Facebook\WebDriver\WebDriverWait;
 
             }finally {
                 $driver->quit();
-                header("Location: ../../View/rob/end_1.php");
+                header("Location: ../../View/rob3/end_3.php");
             }
         }
     }
