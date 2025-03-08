@@ -108,6 +108,8 @@ use Facebook\WebDriver\WebDriverWait;
                 if (!$fileExists_2) {
                     fputcsv($file_2, ['NumOrden','Obser', 'Hor_Ini', 'Hor_Fin']);
                 }
+
+                $exceptionHandled = false;
                 
                 // Procesar cada línea del archivo
                 while (($linea = fgets($gestor)) > 0) {
@@ -249,6 +251,8 @@ use Facebook\WebDriver\WebDriverWait;
                         $usuPass = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                         )->getText();
+
+                        $exceptionHandled = false;
                 
                         $horaFin = microtime(true);
                         // Agregar la nueva fila con los datos obtenidos al archivo CSV

@@ -92,6 +92,8 @@ use Facebook\WebDriver\WebDriverWait;
                     fputcsv($file, ['NumOrden', 'Usu_Mod', 'Usu_Pass', 'Obser', 'Hor_Ini', 'Hor_Fin']);
                 }
 
+                $exceptionHandled = false;
+
                 // Ruta del archivo CSV
                 $filePath_2 = './Retenciones_y_Usuarios_Falla_2.csv';
                 
@@ -249,6 +251,8 @@ use Facebook\WebDriver\WebDriverWait;
                         $usuPass = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                         )->getText();
+
+                        $exceptionHandled = false;
                 
                         $horaFin = microtime(true);
                         // Agregar la nueva fila con los datos obtenidos al archivo CSV
