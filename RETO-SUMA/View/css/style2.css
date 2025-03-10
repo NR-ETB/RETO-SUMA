@@ -215,3 +215,150 @@ body{
     z-index: 0; /* Se coloca detrás del modal */
 }
 /* CSS del Inicio */
+
+/* RESPONSIVE DESIGN */
+@media screen and (max-width: 1200px) {
+    .container {
+        height: 909px; /* -50px */
+    }
+
+    .inic {
+        width: 90%;
+        height: 850px;
+        left: auto;
+    }
+
+    .tittle {
+        left: auto;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .band-content {
+        left: auto;
+        width: 90%;
+    }
+
+    .data {
+        left: auto;
+        text-align: center;
+    }
+
+    .buttons-act {
+        left: auto;
+        text-align: center;
+    }
+
+    .buttons-act-2 {
+        left: auto;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .container {
+        height: 950px; /* -50px */
+    }
+
+    .inic {
+        height: 900px;
+    }
+
+    .tittle {
+        flex-direction: column;
+        align-items: center;
+        left: auto;
+        text-align: center;
+    }
+
+    .tittle img {
+        height: 80px;
+        width: 80px;
+    }
+
+    .tittle h1 {
+        font-size: 22px;
+        margin-top: 10px;
+    }
+
+    .band-content {
+        width: 85%;
+        left: auto;
+    }
+
+    .data {
+        left: auto;
+    }
+
+    .buttons-act, .buttons-act-2 {
+        left: auto;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        height: 1000px; /* -50px */
+    }
+
+    .inic {
+        width: 95%;
+        height: 950px;
+        left: auto;
+        padding: 20px;
+    }
+
+    .tittle {
+        text-align: center;
+        left: auto;
+    }
+
+    .band-content {
+        width: 90%;
+    }
+
+    .data {
+        left: auto;
+        text-align: center;
+    }
+
+    .buttons-act, .buttons-act-2 {
+        left: auto;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        height: 1100px; /* -50px */
+    }
+
+    .inic {
+        width: 100%;
+        height: 1000px;
+        padding: 15px;
+    }
+
+    .tittle h1 {
+        font-size: 18px;
+    }
+
+    .band-content {
+        width: 95%;
+        left: auto;
+    }
+
+    .data {
+        width: 100%;
+        left: auto;
+    }
+
+    .buttons-act, .buttons-act-2 {
+        left: auto;
+        text-align: center;
+        justify-content: center;
+    }
+}
+/* RESPONSIVE DESIGN */

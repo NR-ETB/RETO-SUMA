@@ -168,3 +168,127 @@ a{
     z-index: 0; /* Se coloca detrás del modal */
 }
 /* CSS del Index */
+
+/* RESPONSIVE DESIGN */
+@media screen and (max-width: 1200px) {
+  .container {
+      min-height: 950px; /* Reducido un poco */
+  }
+
+  .inic {
+      width: 90%;
+      height: 850px; /* Ajustado */
+      left: auto;
+  }
+
+  .tittle {
+      left: auto;
+      text-align: center;
+      justify-content: center;
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .container {
+      min-height: 1000px; /* Ligera reducción */
+  }
+
+  .inic {
+      height: 900px;
+  }
+
+  .tittle {
+      flex-direction: column;
+      align-items: center;
+      left: auto;
+      text-align: center;
+  }
+
+  .tittle img {
+      height: 80px;
+      width: 80px;
+  }
+
+  .tittle h1 {
+      font-size: 22px;
+      margin-top: 10px;
+  }
+
+  .container-bot {
+      flex-wrap: wrap;
+  }
+
+  .bot_1, .bot_2 {
+      width: 45%;
+  }
+
+  .bot_3 {
+      width: 90%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+      min-height: 1050px; /* Ajustado para tablets */
+  }
+
+  .inic {
+      width: 95%;
+      height: 950px;
+      left: auto;
+      padding: 20px;
+  }
+
+  .container-bot, .container-bot_2 {
+      flex-direction: column;
+      align-items: center;
+  }
+
+  .bot_1, .bot_2 {
+      width: 80%;
+      height: auto;
+      padding: 20px;
+  }
+
+  .bot_3 {
+      width: 90%;
+      height: auto;
+  }
+
+  .container-bot h1, .container-bot_2 h1 {
+      font-size: 16px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .container {
+      min-height: 1150px; /* Un poco menos largo */
+  }
+
+  .inic {
+      width: 100%;
+      height: 1000px; /* Ajustado para móviles */
+      padding: 15px;
+  }
+
+  .tittle h1 {
+      font-size: 18px;
+  }
+
+  .bot_1, .bot_2, .bot_3 {
+      width: 100%;
+      height: auto;
+      padding: 15px;
+  }
+
+  .bot_1 img, .bot_2 img, .bot_3 img {
+      height: 50px;
+      width: 50px;
+  }
+
+  .container-bot h1, .container-bot_2 h1 {
+      font-size: 14px;
+  }
+}
+/* RESPONSIVE DESIGN */
+

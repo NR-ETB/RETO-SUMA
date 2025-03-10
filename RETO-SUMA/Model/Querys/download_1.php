@@ -1,7 +1,7 @@
 <?php
 // Ruta de la carpeta donde se encuentra el archivo
 $rutaCarpeta = '../../View/rob/';
-$rutaCSV = '../../View/rob/process_1.cvs';
+$rutaCSV = '../../View/rob/process.csv';
 
 // Nombre del archivo CSV
 $nombreArchivo = 'Retenciones_y_Usuarios_1.csv';
@@ -12,51 +12,58 @@ $rutaCompleta = $rutaCarpeta . $nombreArchivo;
 $rutaCompleta_2 = $rutaCarpeta . $nombreArchivo_2;
 
 if (file_exists($rutaCSV)) {
-    // Abrir el archivo en modo escritura para vaciar su contenido
-    $gestor = fopen($rutaCSV, 'w');
+    // Abrir el archivo en modo lectura/escritura
+    $gestor = fopen($rutaCSV, 'r+');
     if ($gestor) {
+        // Truncar el archivo a 0 bytes
+        ftruncate($gestor, 0);
         fclose($gestor);
-        // echo "El contenido del archivo 'process_2.csv' ha sido vaciado.\n";
+        // echo "El contenido del archivo ha sido vaciado.\n";
     } else {
-        // echo "No se pudo abrir el archivo 'process_2.csv' para escritura.\n";
+        // echo "No se pudo abrir el archivo para escritura.\n";
     }
 } else {
-    // echo "El archivo 'process.csv' no existe.\n";
+    // echo "El archivo no existe.\n";
 }
 
-// Verificar si el archivo existe
-if (file_exists($rutaCompleta)) {
-    // Establecer las cabeceras para la descarga
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="' . $nombreArchivo . '"');
-    header('Content-Length: ' . filesize($rutaCompleta));
+// Definir las rutas completas de los archivos
+$archivos = [$rutaCompleta, $rutaCompleta_2];
 
-    // Leer el archivo y enviarlo al navegador
-    readfile($rutaCompleta);
+// Nombre del archivo ZIP que se va a crear
+$nombreArchivoZip = 'GestionesCSV.zip';
 
-    // Eliminar el archivo del servidor después de la descarga
-    unlink($rutaCompleta);
-    unlink($rutaCVS);
+// Crear una nueva instancia de ZipArchive
+$zip = new ZipArchive();
+
+// Abrir el archivo ZIP para agregar archivos
+if ($zip->open($nombreArchivoZip, ZipArchive::CREATE | ZipArchive::OVERWRITE) === TRUE) {
+    foreach ($archivos as $archivo) {
+        if (file_exists($archivo)) {
+            $nombreArchivo = basename($archivo);
+            $zip->addFile($archivo, $nombreArchivo);
+        }
+    }
+    $zip->close();
+
+    // Establecer las cabeceras para la descarga del archivo ZIP
+    header('Content-Type: application/zip');
+    header('Content-Disposition: attachment; filename="' . $nombreArchivoZip . '"');
+    header('Content-Length: ' . filesize($nombreArchivoZip));
+
+    // Leer el archivo ZIP y enviarlo al navegador
+    readfile($nombreArchivoZip);
+
+    // Eliminar el archivo ZIP del servidor después de la descarga
+    unlink($nombreArchivoZip);
+
+    // Eliminar los archivos originales del servidor
+    foreach ($archivos as $archivo) {
+        if (file_exists($archivo)) {
+            unlink($archivo);
+        }
+    }
     exit;
 } else {
-    echo "El archivo no está disponible para descargar.";
-}
-
-// Verificar si el archivo existe
-if (file_exists($rutaCompleta_2)) {
-    // Establecer las cabeceras para la descarga
-    header('Content-Type: text/csv');
-    header('Content-Disposition: attachment; filename="' . $nombreArchivo_2 . '"');
-    header('Content-Length: ' . filesize($rutaCompleta_2));
-
-    // Leer el archivo y enviarlo al navegador
-    readfile($rutaCompleta_2);
-
-    // Eliminar el archivo del servidor después de la descarga
-    unlink($rutaCompleta_2);
-    unlink($rutaCVS);
-    exit;
-} else {
-    echo "El archivo no está disponible para descargar.";
+    echo "No se pudo crear el archivo ZIP.";
 }
 ?>

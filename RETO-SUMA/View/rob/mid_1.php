@@ -1,4 +1,5 @@
 <?php
+session_start();
 require '../../vendor/autoload.php';
 
 use Facebook\WebDriver\Remote\RemoteWebDriver;
@@ -172,10 +173,10 @@ use Facebook\WebDriver\WebDriverWait;
                         $botonBuscar->click();
 
                         if (!function_exists('isElementVisible')) {
-                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout = 2): bool {
+                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout3 = 2): bool {
                                 try {
-                                    $driver->wait($timeout)->until(
-                                        WebDriverExpectedCondition::visibilityOfElementLocated($by)
+                                    $driver->wait($timeout3)->until(
+                                        WebDriverExpectedCondition::elementToBeClickable($by) // Mejor que solo verificar visibilidad
                                     );
                                     return true;
                                 } catch (NoSuchElementException | TimeoutException $e) {
@@ -186,12 +187,14 @@ use Facebook\WebDriver\WebDriverWait;
                         
                         if (isElementVisible($driver, WebDriverBy::id('continue-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('continue-button-modal'));
+                            $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
                             $botonAceptar->click();
                         } 
-                
+                        
                         // Esperar y hacer clic en el botón (no-button-modal2)
                         if (isElementVisible($driver, WebDriverBy::id('no-button-modal2'))) {
                             $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
+                            $driver->executeScript("arguments[0].scrollIntoView();", [$botonNoModal]);
                             $botonNoModal->click();
                             usleep(750 * 1000); // Esperar 0.8 segundos
                             $botonNoModal->click();
@@ -199,14 +202,16 @@ use Facebook\WebDriver\WebDriverWait;
                         
                         if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
+                            $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
                             usleep(750 * 1000); // Esperar 0.8 segundos
                             $botonAceptar->click();
                         }               
                         
                         if (isElementVisible($driver, WebDriverBy::id('continue-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('continue-button-modal'));
+                            $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
                             $botonAceptar->click();
-                        } 
+                        }  
                 
                         // Esperar y hacer clic en el botón 'BotonRetenciones'
                         $botonRetenciones = $wait2->until(
@@ -332,7 +337,6 @@ use Facebook\WebDriver\WebDriverWait;
             </div>
 
             <?php
-            session_start();
 
                 // Generar un token CSRF si no existe
                 if (empty($_SESSION['csrf_token'])) {
