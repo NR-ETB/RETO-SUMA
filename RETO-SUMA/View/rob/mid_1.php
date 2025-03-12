@@ -109,37 +109,21 @@ use Facebook\WebDriver\WebDriverWait;
                 if (!$fileExists_2) {
                     fputcsv($file_2, ['NumOrden','Obser', 'Hor_Ini', 'Hor_Fin']);
                 }
-
-                $exceptionHandled = false;
                 
                 // Procesar cada línea del archivo
-                while (($linea = fgets($gestor)) != false) {
+                while (($linea = fgets($gestor)) !== false) {
                     $primerDato = trim($linea);
-                    if ($primerDato === '') {
-                        continue;
-                    }
+                    // if ($primerDato === '') {
+                        //continue;
+                    //}
+
+                    $exceptionHandled = false;
                 
                     try {
 
-                        $timeout = 0.63;
-                        
-                        // Intervalo de sondeo en milisegundos
-                        $intervalo = 500; // Puedes ajustar este valor según tus necesidades
+                        $wait = new WebDriverWait($driver, 0.61, 500);
 
-                        $wait = new WebDriverWait($driver, $timeout, $intervalo);
-
-                        $timeout2 = 1.63;
-
-                        // Intervalo de sondeo en milisegundos
-                        $intervalo2 = 500; // Puedes ajustar este valor según tus necesidades
-
-                        $wait2 = new WebDriverWait($driver, $timeout2, $intervalo2);
-
-                        $timeout3 = 0.70;
-                        // Intervalo de sondeo en milisegundos
-                        $intervalo3 = 500; // Puedes ajustar este valor según tus necesidades
-
-                        $wait3 = new WebDriverWait($driver, $timeout3, $intervalo3);
+                        $wait2 = new WebDriverWait($driver, 1.61, 500);
 
                         // Capturar el tiempo de inicio
                         $horaInicio = microtime(true);
@@ -196,7 +180,13 @@ use Facebook\WebDriver\WebDriverWait;
                         if (isElementVisible($driver, WebDriverBy::id('continue-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('continue-button-modal'));
                             $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
+                            usleep(750000); // Esperar 1.63 segundos
                             $botonAceptar->click();
+
+                            $botonRetenciones = $wait2->until(
+                                WebDriverExpectedCondition::elementToBeClickable(WebDriverBy::id('BotonRetenciones'))
+                            );
+                            $botonRetenciones->click();
                         } 
                         
                         // Esperar y hacer clic en el botón (no-button-modal2)
@@ -204,20 +194,21 @@ use Facebook\WebDriver\WebDriverWait;
                             $botonNoModal = $driver->findElement(WebDriverBy::id('no-button-modal2'));
                             $driver->executeScript("arguments[0].scrollIntoView();", [$botonNoModal]);
                             $botonNoModal->click();
-                            usleep(750 * 1000); // Esperar 0.8 segundos
+                            usleep(750000); // Esperar 1.23 segundos
                             $botonNoModal->click();
                         }
                         
                         if (isElementVisible($driver, WebDriverBy::id('accept-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('accept-button-modal'));
                             $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
-                            usleep(750 * 1000); // Esperar 0.8 segundos
+                            usleep(750000); // Esperar 1.23 segundos
                             $botonAceptar->click();
                         }               
                         
                         if (isElementVisible($driver, WebDriverBy::id('continue-button-modal'))) {
                             $botonAceptar = $driver->findElement(WebDriverBy::id('continue-button-modal'));
                             $driver->executeScript("arguments[0].scrollIntoView();", [$botonAceptar]);
+                            usleep(750000); // Esperar 1.23 segundos
                             $botonAceptar->click();
                         }  
                 
@@ -242,11 +233,9 @@ use Facebook\WebDriver\WebDriverWait;
 
                             $horaFin = microtime(true);
                             
-                            $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revision manual.";
+                            $observacion = "No se encontro referencia para el ID $primerDato. Se recomienda una revision manual.";
                             fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
-
-                            $exceptionHandled = false; // Marcar que la excepción fue manejada
 
                             // Salir de cualquier iframe y volver al contexto principal
                             $driver->switchTo()->defaultContent();
@@ -254,18 +243,18 @@ use Facebook\WebDriver\WebDriverWait;
                             // Refrescar la página para preparar la siguiente iteración
                             $driver->navigate()->refresh();
 
+                            $exceptionHandled = true;
+
                         }
                         // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
-                        $usuMod = $wait3->until(
+                        $usuMod = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblTramiteFijaUsuarioModificacion'))
                         )->getText();
                 
                         // Esperar y obtener el valor del span lblUsuarioPaso
-                        $usuPass = $wait3->until(
+                        $usuPass = $wait->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                         )->getText();
-
-                        $exceptionHandled = false;
                 
                         $horaFin = microtime(true);
                         // Agregar la nueva fila con los datos obtenidos al archivo CSV
@@ -313,7 +302,7 @@ use Facebook\WebDriver\WebDriverWait;
 
             }finally {
                 $driver->quit();
-                header("Location: ./end_1.php");
+                header("Location: end_1.php");
             }
         }
     }
