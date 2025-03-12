@@ -113,7 +113,7 @@ use Facebook\WebDriver\WebDriverWait;
                 $exceptionHandled = false;
                 
                 // Procesar cada línea del archivo
-                while (($linea = fgets($gestor)) > 0) {
+                while (($linea = fgets($gestor)) != false) {
                     $primerDato = trim($linea);
                     if ($primerDato === '') {
                         continue;
@@ -122,16 +122,24 @@ use Facebook\WebDriver\WebDriverWait;
                     try {
 
                         $timeout = 0.63;
+                        
                         // Intervalo de sondeo en milisegundos
                         $intervalo = 500; // Puedes ajustar este valor según tus necesidades
 
                         $wait = new WebDriverWait($driver, $timeout, $intervalo);
 
                         $timeout2 = 1.63;
+
                         // Intervalo de sondeo en milisegundos
                         $intervalo2 = 500; // Puedes ajustar este valor según tus necesidades
 
                         $wait2 = new WebDriverWait($driver, $timeout2, $intervalo2);
+
+                        $timeout3 = 0.70;
+                        // Intervalo de sondeo en milisegundos
+                        $intervalo3 = 500; // Puedes ajustar este valor según tus necesidades
+
+                        $wait3 = new WebDriverWait($driver, $timeout3, $intervalo3);
 
                         // Capturar el tiempo de inicio
                         $horaInicio = microtime(true);
@@ -173,9 +181,9 @@ use Facebook\WebDriver\WebDriverWait;
                         $botonBuscar->click();
 
                         if (!function_exists('isElementVisible')) {
-                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout3 = 2): bool {
+                            function isElementVisible(RemoteWebDriver $driver, WebDriverBy $by, int $timeout4 = 2): bool {
                                 try {
-                                    $driver->wait($timeout3)->until(
+                                    $driver->wait($timeout4)->until(
                                         WebDriverExpectedCondition::elementToBeClickable($by) // Mejor que solo verificar visibilidad
                                     );
                                     return true;
@@ -234,11 +242,11 @@ use Facebook\WebDriver\WebDriverWait;
 
                             $horaFin = microtime(true);
                             
-                            $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revisión manual.";
+                            $observacion = "No se encontro referencia para el ID $primerDato. Se requiere revision manual.";
                             fputcsv($file, [$primerDato, '', '', $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
 
-                            $exceptionHandled = true; // Marcar que la excepción fue manejada
+                            $exceptionHandled = false; // Marcar que la excepción fue manejada
 
                             // Salir de cualquier iframe y volver al contexto principal
                             $driver->switchTo()->defaultContent();
@@ -248,12 +256,12 @@ use Facebook\WebDriver\WebDriverWait;
 
                         }
                         // Esperar y obtener el valor del span lblTramiteFijaUsuarioModificacion
-                        $usuMod = $wait->until(
+                        $usuMod = $wait3->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblTramiteFijaUsuarioModificacion'))
                         )->getText();
                 
                         // Esperar y obtener el valor del span lblUsuarioPaso
-                        $usuPass = $wait->until(
+                        $usuPass = $wait3->until(
                             WebDriverExpectedCondition::presenceOfElementLocated(WebDriverBy::id('lblUsuarioPaso'))
                         )->getText();
 
@@ -274,7 +282,7 @@ use Facebook\WebDriver\WebDriverWait;
                         if (!$exceptionHandled) {
                             $horaFin = microtime(true);
                     
-                            $observacion = "No fue posible realizar la navegación de $primerDato. Se requiere una segunda subida o revisión manual.";
+                            $observacion = "No fue posible realizar la navegacion de $primerDato. Se requiere una segunda subida o revision manual.";
                             fputcsv($file_2, [$primerDato, $observacion, date('H:i:s', $horaInicio), date('H:i:s', $horaFin)]);
                             echo $observacion . "\n";
                     
@@ -305,7 +313,7 @@ use Facebook\WebDriver\WebDriverWait;
 
             }finally {
                 $driver->quit();
-                header("Location: ../../View/rob/end_1.php");
+                header("Location: ./end_1.php");
             }
         }
     }

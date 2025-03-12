@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['csvFile'])) {
 
                 if (($outputHandle = fopen($outputFile, $modo)) !== FALSE) {
                     // Leer cada línea del CSV y escribirla en process_3.csv
-                    while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                    while (($data = fgetcsv($handle, 2000, ',')) !== FALSE) {
                         // Convertir el array en una línea de texto separada por comas
                         $linea = implode(',', $data) . PHP_EOL;
                         fwrite($outputHandle, $linea);
